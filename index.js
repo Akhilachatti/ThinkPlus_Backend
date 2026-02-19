@@ -13,7 +13,7 @@ const app = express();
 // ----------------------
 const allowedOrigins = [
   "http://localhost:5173",                   // Local Vite frontend
-  "https://your-frontend.vercel.app"         // ⬅️ Replace with your Vercel URL after deployment
+  "https://think-plus-frontend.vercel.app/"         // ⬅️ Replace with your Vercel URL after deployment
 ];
 
 app.use(
