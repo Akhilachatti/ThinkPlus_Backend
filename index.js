@@ -3,7 +3,6 @@ const express = require("express");
 const cors = require("cors");
 const connectDB = require("./config/db");
 
-// Connect DB
 connectDB();
 
 const app = express();
@@ -12,17 +11,25 @@ const app = express();
 // ✅ CORS CONFIGURATION
 // ----------------------
 const allowedOrigins = [
-  "http://localhost:5173",                   // Local Vite frontend
-  "https://think-plus-frontend.vercel.app"         // ⬅️ Replace with your Vercel URL after deployment
+  "http://localhost:5173",
+  "https://think-plus-frontend.vercel.app",
 ];
 
 app.use(
   cors({
-    origin: allowedOrigins,
-    methods: ["GET", "POST", "PUT", "DELETE"],
+    origin: (origin, callback) => {
+      if (!origin) return callback(null, true); // Postman / curl
+      if (allowedOrigins.includes(origin)) return callback(null, true);
+      return callback(new Error("Not allowed by CORS: " + origin));
+    },
     credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
+
+// ❌ REMOVE THIS (Express 5 breaks on "*")
+// app.options("*", cors());
 
 // ----------------------
 // Middleware
@@ -46,5 +53,7 @@ app.use("/api/topics", require("./routes/topicRoutes"));
 // ----------------------
 // SERVER LISTEN
 // ----------------------
-const PORT = process.env.PORT || 5000; // Render uses dynamic port
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () =>
+  console.log(`Server running on port ${PORT}`)
+);

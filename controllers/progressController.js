@@ -1,3 +1,4 @@
+const QuizAttempt = require("../models/QuizAttempt");
 exports.getProgress = async (req, res) => {
   try {
     const userId = req.user._id;
